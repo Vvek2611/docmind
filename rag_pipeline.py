@@ -1,6 +1,4 @@
 import os
-
-
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -33,10 +31,10 @@ def create_vectorstore(chunks):
 
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    temperature=0,
-    api_key=os.environ["GROQ_API_KEY"]
-)
+        model="llama-3.3-70b-versatile",
+        temperature=0,
+        api_key=os.environ["GROQ_API_KEY"]
+    )
 
     prompt = PromptTemplate.from_template("""You are a helpful document assistant.
 Use ONLY the context below to answer the question.
