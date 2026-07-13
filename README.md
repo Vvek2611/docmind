@@ -17,3 +17,46 @@ Ask anything about your PDF. DocMind is an agentic Retrieval-Augmented Generatio
 ---
 
 ## 🏗️ Architecture
+
+
+
+PDF Upload → Chunking → Embedding → FAISS Vector Store
+↓
+User Query → Retriever → Top-K Chunks → Groq LLM (Llama 3.3-70B) → Answer
+
+**Pipeline stages:**
+1. **Ingest** — PDF is parsed and split into overlapping chunks
+2. **Embed** — Chunks are embedded and indexed in a FAISS vector store
+3. **Retrieve** — User query is embedded and matched against the index
+4. **Generate** — Retrieved context + query are passed to the LLM for a grounded answer
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|---|---|
+| Orchestration | LangChain |
+| Vector Store | FAISS |
+| LLM | Groq (Llama 3.3-70B) |
+| Backend | FastAPI *(where applicable)* |
+| Frontend | Streamlit |
+| Deployment | Streamlit Community Cloud |
+| Evaluation | Custom golden QA harness (`eval_harness.py`) |
+
+---
+
+## 🚀 Run Locally
+
+```bash
+git clone https://github.com/Vvek2611/docmind.git
+cd docmind
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
+
+pip install -r requirements.txt
+```
+
+Create a `.env` file in the root:
+
