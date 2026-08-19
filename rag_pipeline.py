@@ -31,7 +31,7 @@ def create_vectorstore(chunks):
 
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
-        llm = ChatGroq(model="openai/gpt-oss-120b", ...)",
+        llm = ChatGroq(model="llama-3.3-70b-versatile", ...)",
         temperature=0,
         api_key=os.environ["GROQ_API_KEY"]
     )
