@@ -34,7 +34,7 @@ def create_vectorstore(chunks):
 
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",  # llama-3.3-70b-versatile was deprecated by Groq (June 2026)
         temperature=0,
         api_key=os.environ["GROQ_API_KEY"]
     )
@@ -67,3 +67,4 @@ def process_document(file_path: str):
     vectorstore = create_vectorstore(chunks)
     chain = build_qa_chain(vectorstore)
     return chain, len(chunks)
+
