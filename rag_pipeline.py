@@ -11,6 +11,7 @@ from langchain_core.runnables import RunnablePassthrough
 
 load_dotenv()
 
+
 def load_and_split(file_path: str):
     loader = PyPDFLoader(file_path)
     documents = loader.load()
@@ -22,6 +23,7 @@ def load_and_split(file_path: str):
     chunks = splitter.split_documents(documents)
     return chunks
 
+
 def create_vectorstore(chunks):
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
@@ -29,24 +31,20 @@ def create_vectorstore(chunks):
     vectorstore = FAISS.from_documents(chunks, embeddings)
     return vectorstore
 
+
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
-    llm = ChatGroq(model="llama-3.3-70b-versatile", ...)
+        model="llama-3.3-70b-versatile",
         temperature=0,
         api_key=os.environ["GROQ_API_KEY"]
     )
-
     prompt = PromptTemplate.from_template("""You are a helpful document assistant.
 Use ONLY the context below to answer the question.
 If the answer is not in the context, say "I couldn't find this in the document."
-
 Context:
 {context}
-
 Question: {question}
-
 Answer:""")
-
     retriever = vectorstore.as_retriever(
         search_type="similarity",
         search_kwargs={"k": 4}
@@ -61,8 +59,8 @@ Answer:""")
         | llm
         | StrOutputParser()
     )
-
     return chain
+
 
 def process_document(file_path: str):
     chunks = load_and_split(file_path)
