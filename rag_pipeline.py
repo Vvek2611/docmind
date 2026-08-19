@@ -8,10 +8,10 @@ from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-
+ 
 load_dotenv()
-
-
+ 
+ 
 def load_and_split(file_path: str):
     loader = PyPDFLoader(file_path)
     documents = loader.load()
@@ -22,16 +22,16 @@ def load_and_split(file_path: str):
     )
     chunks = splitter.split_documents(documents)
     return chunks
-
-
+ 
+ 
 def create_vectorstore(chunks):
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
     vectorstore = FAISS.from_documents(chunks, embeddings)
     return vectorstore
-
-
+ 
+ 
 def build_qa_chain(vectorstore):
     llm = ChatGroq(
         model="openai/gpt-oss-120b",  # llama-3.3-70b-versatile was deprecated by Groq (June 2026)
@@ -49,10 +49,10 @@ Answer:""")
         search_type="similarity",
         search_kwargs={"k": 4}
     )
-
+ 
     def format_docs(docs):
         return "\n\n".join(doc.page_content for doc in docs)
-
+ 
     chain = (
         {"context": retriever | format_docs, "question": RunnablePassthrough()}
         | prompt
@@ -60,11 +60,9 @@ Answer:""")
         | StrOutputParser()
     )
     return chain
-
-
+ 
+ 
 def process_document(file_path: str):
     chunks = load_and_split(file_path)
     vectorstore = create_vectorstore(chunks)
     chain = build_qa_chain(vectorstore)
-    return chain, len(chunks)
-
